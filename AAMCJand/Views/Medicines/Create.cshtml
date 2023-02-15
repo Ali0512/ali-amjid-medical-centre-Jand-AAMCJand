@@ -1,0 +1,95 @@
+﻿@model NewMedicineVM
+@using AAMCJand.Data.Enums
+@using AAMCJand.Data.ViewModels
+@{
+    ViewData["Title"] = "Create New Medicine Data";
+}
+<div class="row">
+    <div class="col-md-8 offset-2">
+        <p>
+            <h4>Create a New Medicine</h4>
+        </p>
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label"></label>
+                            <input asp-for="Name" type="text" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MenuDate" class="control-label"></label>
+                            <input asp-for="MenuDate" type="date" class="form-control" />
+                            <span asp-validation-for="MenuDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ExpiryDate" class="control-label"></label>
+                            <input asp-for="ExpiryDate" type="date" class="form-control" />
+                            <span asp-validation-for="ExpiryDate" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Price" class="control-label"></label>
+                            <input asp-for="Price" type="number" class="form-control" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="ImageURL" class="control-label"></label>
+                            <input asp-for="ImageURL" class="form-control" />
+                            <span asp-validation-for="ImageURL" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="storeId" class="control-label"></label>
+                            <select asp-for="storeId" asp-items="ViewBag.Stores" class="form-control"></select>
+                            <span asp-validation-for="storeId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="MediCategory" class="control-label"></label>
+                            <select asp-for="MediCategory" asp-items="Html.GetEnumSelectList<MediCategory>()" class="form-control"></select>
+                            <span asp-validation-for="MediCategory" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="companyId" class="control-label"></label>
+                            <select asp-for="companyId" asp-items="ViewBag.Companies" class="form-control"></select>
+                            <span asp-validation-for="companyId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="FormulaIds" class="control-label"></label>
+                            <select asp-for="FormulaIds" asp-items="ViewBag.Formulas" class="form-control" multiple></select>
+                            <span asp-validation-for="FormulaIds" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label"></label>
+                            <textarea asp-for="Description" class="form-control" multiple></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                            
+                    </div>
+                </div> 
+                            <div class="col-md-4 offset-2 text-center">
+                                <img width="100%" id="ImageURLPreview" />
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Create" class="btn btn-outline-success float-right"/>
+                                <a class="btn btn-outline-secondary" asp-action="Index">Show All</a>
+                            </div>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script>
+    $("#ImageURL").on("change", function() {
+    var output = document.getElementById('ImageURLPreview');
+    output.src = $(this).val();
+})
+    </script>
+} 

@@ -1,0 +1,128 @@
+﻿@using AAMCJand.Data.ViewModels
+@model ShoppingCartVM
+
+@{
+    ViewData["Title"] = "Shopping cart summary";
+}
+<div class="row">
+    <div class="col-md-8 offset-2">
+        <div class="text-center">
+            <h2>Your Shopping Cart Summary</h2>
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Selected Amount</th>
+                    <th>Movie</th>
+                    <th>Price</th>
+                    <th>Sub Total</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ShoppingCart.ShoppingCartItems)
+                {
+                    <tr>
+                        <td class="align-middle">@item.Amount</td>
+                        <td class="align-middle">@item.Medicine.Name</td>
+                        <td class="align-middle">@item.Medicine.Price.ToString("c")</td>
+                        <td class="align-middle">@((item.Amount * item.Medicine.Price).ToString("c"))</td>
+                        <td class="align-middle">
+                            <a class="text-danger" asp-controller="Orders" asp-action="RemoveItemFromShoppingCart"
+                           asp-route-id="@item.Medicine.Id">
+                                <i class="bi bi-cart-dash"></i>
+                            </a>
+                            |
+                            <a class="text-success" asp-controller="Orders" asp-action="AddItemToShoppingCart"
+                           asp-route-id="@item.Medicine.Id">
+                                <i class="bi bi-cart-plus"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            
+            <tfoot>
+                <tr>
+                    <td colspan="2"></td>
+                    <td><b>Total:</b></td>
+                    <td>
+                        @Model.ShoppingCartTotal.ToString("c")
+                    </td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+        <div class="text-right">
+            <div class="btn-group">
+                @*<a class="btn btn-outline-primary" asp-controller="Orders" asp-action="CompleteOrder">
+                Complete Order
+                </a>*@
+                <div id="paypal-btn"></div>
+                <div id="braintreebutton"></div>
+                <span style="padding:5px;"></span>
+                <input id="nonce" name="payment_method_nonce" type="hidden" />
+                <div id="dropin-container"></div>
+                <a class="btn btn-outline-success" asp-controller="Medicines" asp-action="Index">
+                    Add More Items
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://www.paypalobjects.com/api/checkout.js"> </script>
+    <script src="https://js.braintreegateway.com/web/dropin/1.34.0/js/dropin.min.js"></script>
+    <script>
+        var client_token = "@ViewBag.ClientToken";
+        var button = document.querySelector('#braintreebutton');
+        
+            braintree.dropin.create({
+                // Step three: get client token from your server, such as via
+                //    templates or async http request
+            authorization: client_token,
+                container: '#dropin-container'
+            },function (createErr, instance) {
+                button.addEventListener("click",function(){
+                    event.preventDefault();
+                    instance.requestPaymentMethod(function(err,payload){
+                        document.querySelector('#nonce').value=payload.nonce;
+                        button.submit();
+                    });
+                });
+            });
+    
+        let _total = @Html.Raw(Model.ShoppingCartTotal);
+        paypal.Button.render({
+            env: 'sandbox',
+            client: {
+                sandbox: 'AcKRtgL4i68EZ2ZYuYUx3ilihAg2YhL5dtF_m19A8MjBWVOn6ewNS4M_uV8gA3xi98zTcUq38gUHbVFx'
+            },
+            locale: 'en_US',
+            style: {
+                size: 'small',
+                color: 'gold',
+                shape: 'pill'
+            },
+            commit: true,
+
+            payment: function (data, actions) {
+                return actions.payment.create({
+                    transactions: [{
+                        amount: {
+                            total: _total,
+                            currency: 'USD'
+                        }
+                    }]
+                });
+            },
+            onAuthorize: function (data, actions) {
+                return actions.payment.execute().then(function () {
+                    var url = '@Url.Action("CompleteOrder","Orders",new {})';
+                    window.location.href = url;
+                });
+            }
+        }, 'paypal-btn');
+    </script>
+}

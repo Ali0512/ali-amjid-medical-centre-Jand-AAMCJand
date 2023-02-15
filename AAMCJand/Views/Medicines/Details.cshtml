@@ -1,0 +1,130 @@
+﻿@model Medicine
+
+@{
+    ViewData["Title"] = "Medicine Details";
+}
+<div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-6 align-self-center">
+                        <img src="@Model.ImageURL" class=" mx-auto  d-block" height="300" width="100%" alt="@Model.Name" />                                           
+                                        </div><!--end col-->
+                                        <div class="col-lg-6 align-self-center">
+                                            <div class="single-pro-detail">
+                            <p class="mb-1"> @Model.MediCategory</p>
+                                                <div class="custom-border mb-3"></div>
+                            <h3 class="pro-title">@Model.Name</h3>
+                            <p class="text-muted mb-0">@Model.Description</p>
+                            <p class="text-muted mb-0"><b>Menufaction Date</b> @Model.MenuDate.ToString("dd MMM yyyy")</p>
+                            <p class="text-muted mb-0"><b>Expiry Date</b> @Model.ExpiryDate.ToString("dd MMM yyyy")</p>
+
+                            <p class="text-muted mb-0">
+                                <b>Store</b>
+                                <a asp-controller="Stores" asp-action="Details" asp-route-id="@Model.storeId">
+                                    @Model.Store.Name
+                                </a>
+                            </p>
+                            <p class="text-muted mb-0">
+                                <b>Company</b>
+                                <a asp-controller="Companies" asp-action="Details" asp-route-id="@Model.companyId">
+                                    @Model.Company.FullName
+                                </a>
+                            </p>
+                            <p class="text-muted mb-0">
+                                <b>Status</b>
+                                @if (DateTime.Now >= Model.MenuDate && DateTime.Now <= Model.ExpiryDate)
+                                {
+                                    <span class="badge bg-success text-white">Available</span>
+                                }
+                                else if (DateTime.Now > Model.ExpiryDate)
+                                {
+                                    <span class="badge bg-danger text-white">Expired</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-primary text-white">Upcoming</span>
+                                }
+                            </p>
+                            <h2 class="pro-price">@Model.Price.ToString("c") <span><del>$100.00</del></span><span class="text-danger fw-bold ms-2">50% Off</span></h2>
+                            <h6 class="text-muted font-13">Ingredients :</h6> 
+                                                <div class="list-unstyled pro-features border-0">
+                                <div class="row">
+                                    @foreach (var formula in Model.Formula_Medicines)
+                                    {
+                                        <div class="column">
+                                            
+                                            <a asp-controller="Formulas" asp-action="Details" asp-route-id="@formula.formulaId">@formula.Formula.FullName</a>
+                                        </div>
+                                    }
+                                </div>
+                                                </div>
+                                                                                           
+                                                <div class="quantity mt-3 ">
+                                                    <a class="btn btn-primary btn-sm text-white px-4 d-inline-block" asp-controller="Orders" asp-action="AddItemToShoppingCart" asp-route-id="@Model.Id"><i class="mdi mdi-cart me-2"></i>Add to Cart</a>
+                                                </div>                                             
+                                            </div>
+                                        </div><!--end col-->                                            
+                                    </div><!--end row-->
+                                </div><!--end card-body-->
+                            </div><!--end card-->
+                        </div><!--end col-->
+                    </div><!--end row-->
+
+
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="card">
+                               <div class="card-body">
+                                    <i data-feather="truck" class="align-self-center"></i>
+                                    <h4 class="font-15 text-dark">Fast Delivery</h4>
+                                    <p class="text-muted mb-0">
+                                        It is a long established fact that a reader will be distracted.
+                                        Contrary to popular belief.
+                                    </p>
+                                </div><!--end card-body-->
+                            </div><!--end card-->
+                        </div><!--end col-->
+                        <div class="col-lg-3">
+                            <div class="card">
+                               <div class="card-body">
+                                    <i data-feather="rotate-cw" class="align-self-center"></i>
+                                    <h4 class="font-15 text-dark">Returns in 30 Days</h4>
+                                    <p class="text-muted mb-0">
+                                        It is a long established fact that a reader will be distracted.
+                                        Contrary to popular belief.
+                                    </p>
+                                </div><!--end card-body-->
+                            </div><!--end card-->
+                        </div><!--end col-->
+                        <div class="col-lg-3">
+                            <div class="card">
+                               <div class="card-body">
+                                    <i data-feather="headphones" class="align-self-center"></i>
+                                    <h4 class="font-15 text-dark">Online Support 24/7</h4>
+                                    <p class="text-muted mb-0">
+                                        It is a long established fact that a reader will be distracted.
+                                        Contrary to popular belief.
+                                    </p>
+                                </div><!--end card-body-->
+                            </div><!--end card-->
+                        </div><!--end col-->
+                        <div class="col-lg-3">
+                            <div class="card">
+                               <div class="card-body">
+                                    <i data-feather="dollar-sign" class="align-self-center"></i>
+                                    <h4 class="font-15 text-dark">Secure Payment</h4>
+                                    <p class="text-muted mb-0">
+                                        It is a long established fact that a reader will be distracted.
+                                        Contrary to popular belief.
+                                    </p>
+                                </div><!--end card-body-->
+                            </div><!--end card-->
+                        </div><!--end col-->                                        
+                    </div><!--end row-->
+                    <a class="btn btn-outline-primary float-right" asp-action="Index">Back To List</a>
+
+
+
+

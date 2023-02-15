@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Medicine>
+
+@{
+    ViewData["Title"] = "List Of Medicines";
+}
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body">
+                
+                    <img src="@item.ImageURL" alt="@item.Name" class="d-block mx-auto my-4" height="150">
+                <div class="row my-4">
+                    <div class="col">
+                            <span class="badge badge-light mb-2">@item.Store.Name</span>
+                            <a href="#" class="title-text d-block">@item.Name</a>
+                            @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                            {
+                                <a class="float-right" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil-square"></i></a>
+                            }
+                    </div>
+                    <div class="col-auto">
+                            <h4 class="text-dark mt-0">@item.Price.ToString("c")</h4>
+                    </div>
+                </div>
+                <div class="row">
+                        <div class="col-md-6">
+                            <a class="btn btn-outline-primary float-right" asp-action="Details" asp-route-id="@item.Id"><i class="bi bi-eye-fill"></i>Details</a>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            
+                            <a class="btn btn-primary btn-sm text-white px-4 d-inline-block" asp-controller="Orders" asp-action="AddItemToShoppingCart" asp-route-id="@item.Id"><i class="mdi mdi-cart me-2"></i>Add to Cart</a>
+                           @* <a class="btn btn-success" asp-controller="Orders" asp-action="AddItemToShoppingCart" asp-route-id="@item.Id"><i class="bg-info bi-cart-plus"></i>Add To Cart</a>*@
+                        </div>
+                </div>
+            </div><!--end card-body-->
+        </div><!--end card-->
+    </div><!--end col-->
+    }
+</div> 
+@if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+@await Html.PartialAsync("_CreateItem", "Medicines")
+}

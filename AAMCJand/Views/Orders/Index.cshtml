@@ -1,0 +1,66 @@
+﻿@model List<Order>
+
+@{
+    ViewData["title"] = "All Orders";
+}
+<div class="row">
+    <div class="col-md-8 offset-2">
+        <p>List of all your orders</p>
+        <table class="table" id="orderData">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Items</th>
+                    <th>Total</th>
+                    @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                    {
+                        <th>User</th>
+                        <th>Email</th>
+                    }
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td class="align-middle">@order.Id</td>
+                        <td class="align-middle">
+                            <ul style="list-style-type:none">
+                                @foreach (var item in order.OrderItems)
+                                {
+                                    <li>
+                                        <div class="alert alert-info" role="alert">
+                                            <span class="badge bg-success">@item.Amount</span> [@item.Price.ToString("c")] - @item.Medicine.Name
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </td>
+                        <td class="align-middle">
+                            @order.OrderItems.Select(m=>m.Medicine.Price * m.Amount).Sum().ToString("c")
+                        </td>
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                        {
+                            <td class="align-middle"> @order.User.FullName </td>
+                            <td class="align-middle"> @order.User.Email </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button class="btn btn-success" id="printButton">Print</button>
+    </div>
+</div>
+@section Scripts{
+<script src="~/js/users.js"></script>
+    <script>
+        document.getElementById("printButton").addEventListener("click", function () {
+            var tableToPrint = document.getElementById("orderData");
+            var newWindow = window.open();
+            newWindow.document.write(tableToPrint.outerHTML);
+            newWindow.print();
+            newWindow.close();
+        });
+    </script>
+}
